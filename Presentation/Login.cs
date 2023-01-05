@@ -129,6 +129,13 @@ namespace Presentation
                     return;
                 }
 
+                int id = _user.insertUser(txtId.Text, int.Parse(txtTelefono.Text));
+                MessageBox.Show("Usuario nuevo registrado con exito.\nRecuerda que el Id de tu usuario es:" + id,
+                    "Usuario Registrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                lblTittle.Text = "Login";
+                btnConectar.Text = "Conectar";
+                btnRegistrarse.Text = "Registrate";
+                lblId.Text = "ID:";
             }
         }
 
@@ -142,6 +149,21 @@ namespace Presentation
             btnConectar.Left = (panel2.Width - 2 * btnConectar.Width - 30) / 2;
             btnRegistrarse.Top = (lblMessage.Bottom + 20);
             btnRegistrarse.Left = (btnConectar.Right + 30);
+        }
+
+        private void btnConectar_Click(object sender, EventArgs e)
+        {
+            if (btnConectar.Text == "Conectar")
+            {
+                //Aqui debe ir la logica para mandar la ip del equipo
+            }
+            else
+            {
+                lblTittle.Text = "Login";
+                btnConectar.Text = "Conectar";
+                btnRegistrarse.Text = "Registrate";
+                lblId.Text = "ID:";
+            }
         }
     }
 }
