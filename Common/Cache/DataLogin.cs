@@ -11,6 +11,6 @@ namespace Common.Cache
         public static int IdUser { get; set; }
         public static string UserName { get; set; }
         public static int Telefono { get; set; }
-        public static int IPv4 { get; set; }
+        public static string IPConnected { get; set; }
     }
 }

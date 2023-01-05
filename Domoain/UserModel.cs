@@ -35,5 +35,10 @@ namespace Domain
         {
             return _userDao.validNumber(_telefono);
         }
+
+        public void eliminarIP(string _ip)
+        {
+            _userDao.eliminarIP(_ip);
+        }
     }
 }

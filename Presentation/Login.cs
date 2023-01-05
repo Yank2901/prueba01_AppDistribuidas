@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Domain;
-using Common.Cache;
-
+    
 namespace Presentation
 {
     public partial class Login : Form
@@ -196,8 +190,10 @@ namespace Presentation
                     txtId.Focus();
                     return;
                 }
-                IPAddress ipLocal = GetLocalIPAddress();
-                Console.WriteLine(ipLocal.ToString());
+                _user.insertIP(GetLocalIPAddress().ToString());
+                Mensajes frmMensajes=new Mensajes(this);
+                frmMensajes.Show();
+                this.Hide();
             }
             else
             {
@@ -240,6 +236,20 @@ namespace Presentation
                 }
             }
             throw new Exception("No se ha podido obtener la dirección IP local.");
+        }
+
+        public void ShowForm()
+        {
+            this.Show();
+
+            lblTittle.Text = "Login";
+            btnConectar.Text = "Conectar";
+            btnRegistrarse.Text = "Registrate";
+            lblId.Text = "ID:";
+            txtTelefono.Text = "";
+            txtId.Text = "";
+            lblMessage.Visible = false;
+            txtId.Focus();
         }
     }
 }

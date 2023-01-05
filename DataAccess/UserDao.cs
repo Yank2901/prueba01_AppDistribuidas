@@ -78,6 +78,22 @@ namespace DataAccess
             }
         }
 
+        public void eliminarIP(string _ip)
+        {
+            using (var conexion = geConnection())
+            {
+                conexion.Open();
+                using (var command = new SqlCommand())
+                {
+                    command.Connection = conexion;
+                    command.CommandText = "DELETE FROM listaIP WHERE listaIP._ip=@ip";
+                    command.Parameters.AddWithValue("@ip", _ip);
+                    command.CommandType = CommandType.Text;
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         public List<string> getIPs()
         {
             List<string> IPs=new List<string>();
