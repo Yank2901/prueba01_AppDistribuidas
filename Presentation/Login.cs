@@ -5,12 +5,15 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Domain;
+using Common.Cache;
 
 namespace Presentation
 {
@@ -102,6 +105,10 @@ namespace Presentation
                 btnConectar.Text = "Cancelar";
                 btnRegistrarse.Text = "Registrarse";
                 lblId.Text = "Nombre:";
+                txtTelefono.Text = "";
+                txtId.Text = "";
+                lblMessage.Visible = false;
+                txtId.Focus();
             }
             else
             {
@@ -121,7 +128,7 @@ namespace Presentation
                     return;
                 }
                 // Registro un nuevo usuario en la base de datos
-                if (_user.validNumber(int.Parse(txtTelefono.Text)))
+                if (!_user.validNumber(int.Parse(txtTelefono.Text)))
                 {
                     lblMessage.Text = "El número de telefono ya esta en uso!";
                     lblMessage.Visible = true;
@@ -136,6 +143,10 @@ namespace Presentation
                 btnConectar.Text = "Conectar";
                 btnRegistrarse.Text = "Registrate";
                 lblId.Text = "ID:";
+                txtTelefono.Text = "";
+                txtId.Text = "";
+                lblMessage.Visible=false;
+                txtId.Focus();
             }
         }
 
@@ -155,7 +166,38 @@ namespace Presentation
         {
             if (btnConectar.Text == "Conectar")
             {
-                //Aqui debe ir la logica para mandar la ip del equipo
+                // Validamos que se ingresen los datos
+                if (txtId.Text == "")
+                {
+                    lblMessage.Text = "Ingresa el ID!";
+                    lblMessage.Visible = true;
+                    txtId.Focus();
+                    return;
+                }
+                if (txtTelefono.Text == "")
+                {
+                    lblMessage.Text = "Ingresa un telefono!";
+                    lblMessage.Visible = true;
+                    txtTelefono.Focus();
+                    return;
+                }
+                /*
+                 * No validamos el valor de los datos de entrada ya que
+                 * los textbox estan controlados con su evento keypress
+                 * para permitir solo ingresar numeros
+                 * Validamos que los datos de id y telefono si existan en la base de datos
+                 */
+                if(!_user.validLogin(int.Parse(txtId.Text),int.Parse(txtTelefono.Text)))
+                {
+                    lblMessage.Text = "Credenciales incorrectas!";
+                    lblMessage.Visible=true;
+                    txtTelefono.Text = "";
+                    txtId.Text = "";
+                    txtId.Focus();
+                    return;
+                }
+                IPAddress ipLocal = GetLocalIPAddress();
+                Console.WriteLine(ipLocal.ToString());
             }
             else
             {
@@ -163,7 +205,41 @@ namespace Presentation
                 btnConectar.Text = "Conectar";
                 btnRegistrarse.Text = "Registrate";
                 lblId.Text = "ID:";
+                txtTelefono.Text = "";
+                txtId.Text = "";
+                lblMessage.Visible = false;
+                txtId.Focus();
             }
+        }
+
+        private void txtTelefono_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtId_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)&&lblId.Text=="ID:")
+            {
+                e.Handled = true;
+            }
+        }
+
+        private IPAddress GetLocalIPAddress()
+        {
+            // Obtener la dirección IP de la interfaz de red local
+            IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
+            foreach (IPAddress address in addresses)
+            {
+                if (address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(address))
+                {
+                    return address;
+                }
+            }
+            throw new Exception("No se ha podido obtener la dirección IP local.");
         }
     }
 }

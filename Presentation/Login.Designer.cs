@@ -170,6 +170,7 @@
             this.txtId.Name = "txtId";
             this.txtId.Size = new System.Drawing.Size(509, 40);
             this.txtId.TabIndex = 2;
+            this.txtId.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtId_KeyPress);
             // 
             // txtTelefono
             // 
@@ -180,6 +181,7 @@
             this.txtTelefono.Name = "txtTelefono";
             this.txtTelefono.Size = new System.Drawing.Size(509, 40);
             this.txtTelefono.TabIndex = 2;
+            this.txtTelefono.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTelefono_KeyPress);
             // 
             // lblTelefono
             // 

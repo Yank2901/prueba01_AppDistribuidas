@@ -93,6 +93,10 @@
     <None Include="Resources\cerrar.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{5ab4aecc-9421-4322-a1e8-26a5cb2f35ab}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Domoain\Domain.csproj">
       <Project>{03c4f0f7-cc48-4aa0-8c1e-db297a1fe1a0}</Project>
       <Name>Domain</Name>

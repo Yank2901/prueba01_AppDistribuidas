@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Cache;
 
 namespace DataAccess
 {
@@ -25,29 +26,40 @@ namespace DataAccess
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
+                        {
+                            DataLogin.IdUser = int.Parse(reader[0].ToString());
+                            DataLogin.UserName = reader[1].ToString();
+                            DataLogin.Telefono = int.Parse(reader[2].ToString());
                             return true;
+                        }
                     }
                 }
             }
             return false;
         }
 
-        public void insertUser(string _nombre,string _direccion ,int _telefono)
+        public int insertUser(string _nombre, int _telefono)
         {
+            int id=0;
             using (var conexion = geConnection())
             {
                 conexion.Open();
                 using (var command = new SqlCommand())
                 {
                     command.Connection = conexion;
-                    command.CommandText = "INSERT INTO usuario VALUES (@nombre, @direccion,@telefono);";
+                    command.CommandText = "INSERT INTO usuario (_nombre,_telefono)VALUES (@nombre,@telefono);" +
+                                          "SELECT SCOPE_IDENTITY() AS 'LastID'; ";
                     command.Parameters.AddWithValue("@nombre", _nombre);
-                    command.Parameters.AddWithValue("@direccion", _direccion);
                     command.Parameters.AddWithValue("@telefono", _telefono);
                     command.CommandType = CommandType.Text;
-                    command.ExecuteNonQuery();
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        id = int.Parse(reader[0].ToString());
+                    }
                 }
             }
+            return id;
         }
 
         public void insertIP(string _ip)

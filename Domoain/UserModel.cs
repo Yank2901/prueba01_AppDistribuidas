@@ -26,9 +26,9 @@ namespace Domain
             return _userDao.getIPs();
         }
 
-        public void insertUser(string _nombre, string _direccion, int _telefono)
+        public int insertUser(string _nombre, int _telefono)
         {
-            _userDao.insertUser(_nombre,_direccion,_telefono);
+            return _userDao.insertUser(_nombre,_telefono);
         }
 
         public bool validNumber(int _telefono)
