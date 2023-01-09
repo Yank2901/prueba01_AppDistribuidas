@@ -11,7 +11,7 @@ namespace DataAccess
 {
     public class UserDao:Connection
     {
-        public bool validLogin(int _id, int _telefono)
+        public string validLogin(int _id, int _telefono)
         {
             using (var conexion = geConnection())
             {
@@ -27,15 +27,12 @@ namespace DataAccess
                     {
                         if (reader.Read())
                         {
-                            DataLogin.IdUser = int.Parse(reader[0].ToString());
-                            DataLogin.UserName = reader[1].ToString();
-                            DataLogin.Telefono = int.Parse(reader[2].ToString());
-                            return true;
+                            return reader[1].ToString(); ;
                         }
                     }
                 }
             }
-            return false;
+            return null;
         }
 
         public int insertUser(string _nombre, int _telefono)

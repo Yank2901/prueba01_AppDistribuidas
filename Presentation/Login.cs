@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -7,13 +6,14 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using Domain;
+using Common.Cache;
     
 namespace Presentation
 {
     public partial class Login : Form
     {
-        UserModel _user = new UserModel();
+        Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
         [DllImport("user32.dll")]
@@ -63,7 +63,7 @@ namespace Presentation
             btnClose.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             btnMaximize.SizeMode= System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             btnMinimize.SizeMode= System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-
+            clientSocket.Connect(new IPEndPoint(IPAddress.Parse("192.168.100.9"), 5000));
         }
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
@@ -122,7 +122,11 @@ namespace Presentation
                     return;
                 }
                 // Registro un nuevo usuario en la base de datos
-                if (!_user.validNumber(int.Parse(txtTelefono.Text)))
+
+                string envio = "3," + txtTelefono.Text;
+                EnviarMensaje(envio,clientSocket);
+                string recivo = RecibirMensaje(clientSocket);
+                if (recivo=="true")
                 {
                     lblMessage.Text = "El número de telefono ya esta en uso!";
                     lblMessage.Visible = true;
@@ -130,7 +134,10 @@ namespace Presentation
                     return;
                 }
 
-                int id = _user.insertUser(txtId.Text, int.Parse(txtTelefono.Text));
+                envio = "4," + txtId.Text +","+ txtTelefono.Text;
+                EnviarMensaje(envio,clientSocket);
+                recivo = RecibirMensaje(clientSocket);
+                int id = int.Parse(recivo);
                 MessageBox.Show("Usuario nuevo registrado con exito.\nRecuerda que el Id de tu usuario es:" + id,
                     "Usuario Registrado", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 lblTittle.Text = "Login";
@@ -181,7 +188,12 @@ namespace Presentation
                  * para permitir solo ingresar numeros
                  * Validamos que los datos de id y telefono si existan en la base de datos
                  */
-                if(!_user.validLogin(int.Parse(txtId.Text),int.Parse(txtTelefono.Text)))
+
+                string envio = "1," + txtId.Text + "," + txtTelefono.Text;
+                EnviarMensaje(envio, clientSocket);
+                string recivo = RecibirMensaje(clientSocket);
+                
+                if(recivo=="false")
                 {
                     lblMessage.Text = "Credenciales incorrectas!";
                     lblMessage.Visible=true;
@@ -190,9 +202,19 @@ namespace Presentation
                     txtId.Focus();
                     return;
                 }
-                _user.insertIP(GetLocalIPAddress().ToString());
+
+                DataLogin.IdUser=int.Parse(txtId.Text);
+                DataLogin.Telefono=int.Parse(txtTelefono.Text);
+                DataLogin.UserName = recivo;
+                //Aqui añadiremos la nueva ip para ello debemos enviar la opcion y la ip
+                DataLogin.IP = GetLocalIPAddress().ToString();
+                envio ="2,"+DataLogin.IP;
+                EnviarMensaje(envio,clientSocket);
+                recivo = RecibirMensaje(clientSocket);
+                DataLogin.IPs = recivo;
                 Mensajes frmMensajes=new Mensajes(this);
                 frmMensajes.Show();
+                clientSocket.Close();
                 this.Hide();
             }
             else
@@ -238,18 +260,31 @@ namespace Presentation
             throw new Exception("No se ha podido obtener la dirección IP local.");
         }
 
-        public void ShowForm()
+        static void EnviarMensaje(string message,Socket socket)
         {
-            this.Show();
+            try
+            {
+                byte[] data = Encoding.UTF8.GetBytes(message);
+                socket.Send(data);
 
-            lblTittle.Text = "Login";
-            btnConectar.Text = "Conectar";
-            btnRegistrarse.Text = "Registrate";
-            lblId.Text = "ID:";
-            txtTelefono.Text = "";
-            txtId.Text = "";
-            lblMessage.Visible = false;
-            txtId.Focus();
+            }
+            catch
+            { }
+        }
+
+        static string RecibirMensaje(Socket socket)
+        {
+            try 
+            { 
+                byte[] receiveData = new byte[1024]; 
+                int bytesReceived = socket.Receive(receiveData); 
+                string receiveMessage = Encoding.UTF8.GetString(receiveData, 0, bytesReceived); 
+                return receiveMessage;
+            }
+            catch 
+            { 
+                return null;
+            }
         }
     }
 }

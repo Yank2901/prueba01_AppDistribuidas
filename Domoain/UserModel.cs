@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using DataAccess;
 
 namespace Domain
@@ -11,7 +7,7 @@ namespace Domain
     {
         UserDao _userDao=new UserDao();
 
-        public bool validLogin(int _id, int _telefono)
+        public string validLogin(int _id, int _telefono)
         {
             return _userDao.validLogin(_id, _telefono);
         }

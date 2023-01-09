@@ -6,15 +6,17 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
-using Domain;
+using Common.Cache;
 
 namespace Presentation
 {
     public partial class Mensajes : Form
     {
-        UserModel _user = new UserModel();
+        Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private Login login1;
+        
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
         [DllImport("user32.dll")]
@@ -29,9 +31,8 @@ namespace Presentation
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.Close();
-            _user.eliminarIP(GetLocalIPAddress().ToString());
-            login1.ShowForm();
+            EnviarMensaje("5," + DataLogin.IP, clientSocket);
+            Application.Exit();
         }
 
         private void btnMaximize_Click(object sender, EventArgs e)
@@ -65,6 +66,17 @@ namespace Presentation
             btnClose.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             btnMaximize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             btnMinimize.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            clientSocket.Connect(new IPEndPoint(IPAddress.Parse("192.168.100.9"), 5000));
+            try
+            {
+                Thread hiloRecibir = new Thread(() => Conectar_Cliente_Recibir(90,txtChat));
+                hiloRecibir.Start();
+
+            }
+            catch
+            {
+                Console.WriteLine("No se pudo conectar al servidor");
+            }
         }
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
@@ -90,18 +102,101 @@ namespace Presentation
             }
         }
 
-        private IPAddress GetLocalIPAddress()
+        static void EnviarMensaje(string message, Socket socket)
         {
-            // Obtener la dirección IP de la interfaz de red local
-            IPAddress[] addresses = Dns.GetHostAddresses(Dns.GetHostName());
-            foreach (IPAddress address in addresses)
+            try
             {
-                if (address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(address))
+                byte[] data = Encoding.UTF8.GetBytes(message);
+                socket.Send(data);
+            }
+            catch
+            { }
+        }
+
+        static string RecibirMensaje(Socket socket)
+        {
+            try
+            {
+                byte[] receiveData = new byte[1024];
+                int bytesReceived = socket.Receive(receiveData);
+                string receiveMessage = Encoding.UTF8.GetString(receiveData, 0, bytesReceived);
+                return receiveMessage;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private void btnEnviar_Click(object sender, EventArgs e)
+        {
+            if(txtText.Text==null)
+                return;
+            string mensaje=DataLogin.UserName+": "+txtText.Text;
+            txtChat.Text = txtChat.Text + "\n" + mensaje;
+            foreach (string ip in DataLogin.IPs.Split(','))
+            {
+                if (ip != DataLogin.IP&&ip!="")
                 {
-                    return address;
+                    Conectar_Cliente_Enviar(ip, 90, mensaje);
                 }
             }
-            throw new Exception("No se ha podido obtener la dirección IP local.");
+        }
+
+        private void btnActualizar_Click(object sender, EventArgs e)
+        {
+            EnviarMensaje("6", clientSocket);
+            DataLogin.IPs = RecibirMensaje(clientSocket);
+        }
+
+        static public void Conectar_Cliente_Enviar(string direccion_IP, int puerto, string mensajeEnviar)
+        {
+            try
+            {
+                IPEndPoint IP_end = new IPEndPoint(IPAddress.Parse(direccion_IP), puerto);
+                Socket socket_cliente = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket_cliente.Connect(IP_end);
+                string mensaje_enviar = mensajeEnviar;
+                byte[] msg_enviar = System.Text.Encoding.ASCII.GetBytes(mensaje_enviar);
+                int bytes_enviados = socket_cliente.Send(msg_enviar);
+                socket_cliente.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+
+        public static void Conectar_Cliente_Recibir(int puerto,TextBox txt)
+        {
+            while (true)
+            {
+                try
+                {
+                    IPEndPoint IP_end = new IPEndPoint(IPAddress.Any, puerto);
+                    Socket socket_servidor = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    socket_servidor.Bind(IP_end);
+                    socket_servidor.Listen(5);
+                    //"Esperando por conexión del cliente"
+                    Console.WriteLine("esperando mensaje en el hilo 2");
+                    Socket socket_cliente = socket_servidor.Accept();
+                    //"Conectado"
+                    byte[] msg_recibido = new byte[1024];
+                    int bytes_recibidos = socket_cliente.Receive(msg_recibido);
+                    if (Encoding.ASCII.GetString(msg_recibido, 0, bytes_recibidos) != "vacio")
+                    {
+                        string mensaje = Encoding.ASCII.GetString(msg_recibido, 0, bytes_recibidos);
+                        socket_cliente.Close();
+                        socket_servidor.Close();
+                        txt.Text = txt.Text + "\n" + mensaje;
+                    }
+
+                }
+                catch       
+                {
+                    // return e.ToString();
+                }
+            }
         }
     }
 }

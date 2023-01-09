@@ -34,10 +34,10 @@
             this.btnClose = new System.Windows.Forms.PictureBox();
             this.btnMinimize = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.btnRegistrarse = new System.Windows.Forms.Button();
-            this.btnConectar = new System.Windows.Forms.Button();
-            this.txtId = new System.Windows.Forms.TextBox();
-            this.txtTelefono = new System.Windows.Forms.TextBox();
+            this.btnActualizar = new System.Windows.Forms.Button();
+            this.btnEnviar = new System.Windows.Forms.Button();
+            this.txtChat = new System.Windows.Forms.TextBox();
+            this.txtText = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.btnMaximize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnClose)).BeginInit();
@@ -106,66 +106,70 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.DarkGray;
-            this.panel2.Controls.Add(this.btnRegistrarse);
-            this.panel2.Controls.Add(this.btnConectar);
-            this.panel2.Controls.Add(this.txtId);
-            this.panel2.Controls.Add(this.txtTelefono);
+            this.panel2.Controls.Add(this.btnActualizar);
+            this.panel2.Controls.Add(this.btnEnviar);
+            this.panel2.Controls.Add(this.txtChat);
+            this.panel2.Controls.Add(this.txtText);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 60);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(800, 390);
             this.panel2.TabIndex = 2;
             // 
-            // btnRegistrarse
+            // btnActualizar
             // 
-            this.btnRegistrarse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRegistrarse.BackColor = System.Drawing.Color.LightGreen;
-            this.btnRegistrarse.FlatAppearance.BorderSize = 0;
-            this.btnRegistrarse.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRegistrarse.Font = new System.Drawing.Font("Comic Sans MS", 13.8F);
-            this.btnRegistrarse.Location = new System.Drawing.Point(600, 320);
-            this.btnRegistrarse.Name = "btnRegistrarse";
-            this.btnRegistrarse.Size = new System.Drawing.Size(170, 50);
-            this.btnRegistrarse.TabIndex = 4;
-            this.btnRegistrarse.Text = "Actualizar";
-            this.btnRegistrarse.UseVisualStyleBackColor = false;
+            this.btnActualizar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnActualizar.BackColor = System.Drawing.Color.LightGreen;
+            this.btnActualizar.FlatAppearance.BorderSize = 0;
+            this.btnActualizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnActualizar.Font = new System.Drawing.Font("Comic Sans MS", 13.8F);
+            this.btnActualizar.Location = new System.Drawing.Point(600, 320);
+            this.btnActualizar.Name = "btnActualizar";
+            this.btnActualizar.Size = new System.Drawing.Size(170, 50);
+            this.btnActualizar.TabIndex = 4;
+            this.btnActualizar.Text = "Actualizar";
+            this.btnActualizar.UseVisualStyleBackColor = false;
+            this.btnActualizar.Click += new System.EventHandler(this.btnActualizar_Click);
             // 
-            // btnConectar
+            // btnEnviar
             // 
-            this.btnConectar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnConectar.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.btnConectar.FlatAppearance.BorderSize = 0;
-            this.btnConectar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnConectar.Font = new System.Drawing.Font("Comic Sans MS", 13.8F);
-            this.btnConectar.Location = new System.Drawing.Point(600, 260);
-            this.btnConectar.Name = "btnConectar";
-            this.btnConectar.Size = new System.Drawing.Size(170, 50);
-            this.btnConectar.TabIndex = 3;
-            this.btnConectar.Text = "Enviar";
-            this.btnConectar.UseVisualStyleBackColor = false;
+            this.btnEnviar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEnviar.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.btnEnviar.FlatAppearance.BorderSize = 0;
+            this.btnEnviar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEnviar.Font = new System.Drawing.Font("Comic Sans MS", 13.8F);
+            this.btnEnviar.Location = new System.Drawing.Point(600, 260);
+            this.btnEnviar.Name = "btnEnviar";
+            this.btnEnviar.Size = new System.Drawing.Size(170, 50);
+            this.btnEnviar.TabIndex = 3;
+            this.btnEnviar.Text = "Enviar";
+            this.btnEnviar.UseVisualStyleBackColor = false;
+            this.btnEnviar.Click += new System.EventHandler(this.btnEnviar_Click);
             // 
-            // txtId
+            // txtChat
             // 
-            this.txtId.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txtChat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtId.Font = new System.Drawing.Font("Comic Sans MS", 13.8F);
-            this.txtId.Location = new System.Drawing.Point(30, 20);
-            this.txtId.Multiline = true;
-            this.txtId.Name = "txtId";
-            this.txtId.Size = new System.Drawing.Size(740, 220);
-            this.txtId.TabIndex = 2;
+            this.txtChat.Font = new System.Drawing.Font("Courier New", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtChat.Location = new System.Drawing.Point(30, 20);
+            this.txtChat.Multiline = true;
+            this.txtChat.Name = "txtChat";
+            this.txtChat.ReadOnly = true;
+            this.txtChat.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtChat.Size = new System.Drawing.Size(740, 220);
+            this.txtChat.TabIndex = 2;
             // 
-            // txtTelefono
+            // txtText
             // 
-            this.txtTelefono.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtTelefono.Font = new System.Drawing.Font("Comic Sans MS", 13.8F);
-            this.txtTelefono.Location = new System.Drawing.Point(30, 260);
-            this.txtTelefono.Multiline = true;
-            this.txtTelefono.Name = "txtTelefono";
-            this.txtTelefono.Size = new System.Drawing.Size(550, 110);
-            this.txtTelefono.TabIndex = 2;
+            this.txtText.Font = new System.Drawing.Font("Comic Sans MS", 13.8F);
+            this.txtText.Location = new System.Drawing.Point(30, 260);
+            this.txtText.Multiline = true;
+            this.txtText.Name = "txtText";
+            this.txtText.Size = new System.Drawing.Size(550, 110);
+            this.txtText.TabIndex = 2;
             // 
             // Mensajes
             // 
@@ -199,9 +203,9 @@
         private System.Windows.Forms.PictureBox btnClose;
         private System.Windows.Forms.PictureBox btnMinimize;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button btnRegistrarse;
-        private System.Windows.Forms.Button btnConectar;
-        private System.Windows.Forms.TextBox txtId;
-        private System.Windows.Forms.TextBox txtTelefono;
+        private System.Windows.Forms.Button btnActualizar;
+        private System.Windows.Forms.Button btnEnviar;
+        private System.Windows.Forms.TextBox txtChat;
+        private System.Windows.Forms.TextBox txtText;
     }
 }
